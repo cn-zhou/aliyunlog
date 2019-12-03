@@ -12,16 +12,18 @@ type AliLogFormat struct {
 }
 
 func (a *AliLogFormat) Format(entry *log.Entry) ([]byte, error) {
-	msg := map[string]interface{}{
-		"message": entry.Message,
-	}
+	eData := make(map[string]interface{})
 	//累加
+	eData["content"] = entry.Message
 	if len(entry.Data) != 0 {
 		for k, v := range entry.Data {
-			msg[k] = v
+			eData[k] = v
 		}
 	}
-	m, _ := json.Marshal(msg)
+	fullData := map[string]interface{}{
+		"message": eData,
+	}
+	m, _ := json.Marshal(fullData)
 	var bf bytes.Buffer
 	bf.WriteString(GetLocalIp())
 	bf.WriteString("|")
